@@ -9,6 +9,8 @@
       - tmux
       - zsh
       - curl
+      - unzip
+      - libusb-dev
       - docker.io
       - docker-compose
       - openjdk-21-jre

@@ -2,7 +2,7 @@
   gather_facts: true
   roles:
     - vscode
-    - jadx
     - android_studio
-
-
+    - pycharm
+    - jadx
+    - odin
