@@ -1,13 +1,15 @@
 - name: Add Microsoft apt key
-  ansible.builtin.apt_key:
+  apt_key:
     url: https://packages.microsoft.com/keys/microsoft.asc
     state: present
+  become: true
 
 - name: Add VSCode repository
-  ansible.builtin.apt_repository:
+  apt_repository:
     repo: "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
     state: present
     update_cache: yes
+  become: true
 
 - name: Install selected VSCode extensions
   become: false
@@ -15,5 +17,5 @@
     vscode_extensions:
       - ms-python.python
       - ms-vscode.cpptools
-  ansible.builtin.command: "code --install-extension {{ item }} --force"
+  command: "code --install-extension {{ item }} --force"
   loop: "{{ vscode_extensions }}"
