@@ -1,2 +1,2 @@
-- import_playbook: bootstrap.yaml
-- import_playbook: work.yaml
+- import_playbook: base.yaml
+- import_playbook: platforms.yaml

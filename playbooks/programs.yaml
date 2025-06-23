@@ -1,5 +1,8 @@
 - hosts: localhost
   gather_facts: true
   roles:
-    - ide_vscode
+    - vscode
+    - jadx
+    - android_studio
+
 

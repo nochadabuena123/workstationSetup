@@ -15,6 +15,5 @@
     vscode_extensions:
       - ms-python.python
       - ms-vscode.cpptools
-      - 
   ansible.builtin.command: "code --install-extension {{ item }} --force"
   loop: "{{ vscode_extensions }}"
