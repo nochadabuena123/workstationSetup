@@ -28,8 +28,6 @@
   shell: |
     udevadm control --reload-rules
     udevadm trigger
-  args:
-    warn: false
   become: true
 
 - name: Verify odin4 installation

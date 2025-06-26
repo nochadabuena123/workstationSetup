@@ -11,6 +11,13 @@
     update_cache: yes
   become: true
 
+- name: Install Visual Studio Code
+  apt:
+    name: code
+    state: present
+    update_cache: yes
+  become: true
+   
 - name: Install selected VSCode extensions
   become: false
   vars:

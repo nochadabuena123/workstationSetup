@@ -20,7 +20,8 @@
     path: /opt/jadx-{{ release_info.json.tag_name }}
     state: directory
     mode: '0755'
-
+  become: true 
+   
 - name: Unzip JADX
   unarchive:
     src: /tmp/jadx.zip
