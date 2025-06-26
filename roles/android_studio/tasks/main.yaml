@@ -1,0 +1,46 @@
+- name: Fetch Android Studio download page
+  uri:
+    url: https://developer.android.com/studio
+    return_content: yes
+  register: page
+
+- name: Extract latest Linux download URL
+  set_fact:
+    # Looking for the download link for the latest version
+    download_url: "{{ page.content | regex_search('https://redirector.gvt1.com/edgedl/android/studio/ide-zips/.*-linux.tar.gz', '\\0') | first }}"
+
+- name: Download Android Studio tarball
+  get_url:
+    url: "{{ download_url }}"
+    dest: "{{ download_path }}"
+    mode: '0644'
+  register: download_result
+
+- name: Remove any previous installation
+  file:
+    path: "{{ install_dir }}"
+    state: absent
+  become: true
+  when: download_result.changed
+
+- name: Extract to /opt
+  unarchive:
+    src: "{{ download_path }}"
+    dest: "/opt"
+    remote_src: yes
+  become: true
+  when: download_result.changed
+
+- name: Create launcher symlink
+  file:
+    src: "{{ install_dir }}/bin/studio.sh"
+    dest: "/usr/local/bin/android-studio"
+    state: link
+    mode: '0755'
+  become: true
+  when: download_result.changed
+
+- name: Clean up downloaded tarball
+  file:
+    path: "{{ download_path }}"
+    state: absent

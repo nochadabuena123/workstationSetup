@@ -1,0 +1,47 @@
+- name: Fetch the latest release version of JADX
+  uri:
+    url: "https://api.github.com/repos/skylot/jadx/releases/latest"
+    return_content: yes
+  register: release_info
+  failed_when: release_info.status != 200
+
+- name: Set the download URL for the latest release
+  set_fact:
+    download_url: "https://github.com/skylot/jadx/releases/download/{{ release_info.json.tag_name }}/jadx-{{ release_info.json.tag_name | regex_replace('^v', '') }}.zip"
+
+- name: Download the latest JADX release
+  get_url:
+    url: "{{ download_url }}"
+    dest: "/tmp/jadx.zip"
+  register: download_result
+
+- name: Ensure target directory exists
+  file:
+    path: /opt/jadx-{{ release_info.json.tag_name }}
+    state: directory
+    mode: '0755'
+  become: true 
+   
+- name: Unzip JADX
+  unarchive:
+    src: /tmp/jadx.zip
+    dest: /opt/jadx-{{ release_info.json.tag_name }}
+    remote_src: yes
+  when: download_result.changed
+  become: true
+
+- name: Create symbolic links for jadx and jadx-gui
+  file:
+    src: "/opt/jadx-{{ release_info.json.tag_name }}/bin/{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    state: link
+  loop:
+    - jadx
+    - jadx-gui
+  when: download_result.changed
+  become: true
+
+- name: Clean up downloaded zip file
+  file:
+    path: /tmp/jadx.zip
+    state: absent

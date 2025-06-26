@@ -1,0 +1,39 @@
+- name: Download odin4 archive
+  get_url:
+    url: https://github.com/Adrilaw/OdinV4/releases/download/v1.0/odin.zip
+    dest: /tmp/odin4.zip
+    mode: "0644"
+
+- name: Unzip odin4
+  unarchive:
+    src: /tmp/odin4.zip
+    dest: /usr/local/bin/
+    remote_src: yes
+  become: true
+
+- name: Ensure odin4 is executable
+  file:
+    path: /usr/local/bin/odin4
+    mode: '0755'
+  become: true
+
+- name: Create udev rule for Samsung devices
+  copy:
+    content: 'SUBSYSTEM=="usb", ATTR{idVendor}=="04e8", MODE="0666", GROUP="plugdev"'
+    dest: "/etc/udev/rules.d/51-android.rules"
+    mode: '0644'
+  become: true
+
+- name: Reload udev rules
+  shell: |
+    udevadm control --reload-rules
+    udevadm trigger
+  become: true
+
+- name: Verify odin4 installation
+  command: "odin4 -v"
+  register: odin_version_out
+
+- name: Display odin4 version
+  debug:
+    msg: "{{ odin_version_out.stdout }}"

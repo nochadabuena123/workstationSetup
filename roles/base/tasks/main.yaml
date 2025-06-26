@@ -1,0 +1,24 @@
+- name: Ensure apt cache is fresh
+  ansible.builtin.apt:
+    update_cache: yes
+  become: true
+
+- name: Install essential packages
+  ansible.builtin.apt:
+    name:
+      - tmux
+      - zsh
+      - curl
+      - unzip
+      - libusb-dev
+      - docker.io
+      - docker-compose
+      - openjdk-21-jre
+    state: present
+  become: true
+
+- name: Enable and start Docker
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true

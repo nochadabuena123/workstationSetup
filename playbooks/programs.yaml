@@ -1,0 +1,8 @@
+- hosts: localhost
+  gather_facts: true
+  roles:
+    - vscode
+    - android_studio
+    - pycharm
+    - jadx
+    - odin

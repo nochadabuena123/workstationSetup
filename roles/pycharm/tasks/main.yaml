@@ -1,0 +1,12 @@
+- name: Ensure snapd is installed
+  apt:
+    name: snapd
+    state: present
+    update_cache: yes
+  become: true
+
+- name: Install PyCharm Community Edition via snap
+  snap:
+    name: pycharm-community
+    classic: yes
+  become: true
